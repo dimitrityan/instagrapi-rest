@@ -14,6 +14,23 @@ router = APIRouter(
     responses={404: {"description": "Not found"}}
 )
 
+@router.get("/location", response_model=List[Location])
+async def media_location(sessionid: str,
+                        lat: float,
+                        lng: float,
+                        clients: ClientStorage = Depends(get_clients)):
+    cl = clients.get(sessionid)
+    return  cl.location_search(lat, lng)
+
+
+@router.get("/location/recent")
+async def recent_media_location(sessionid: str,
+                        id: int,
+                        amount: int,
+                        clients: ClientStorage = Depends(get_clients)):
+    cl = clients.get(sessionid)
+    return cl.location_medias_recent(location_pk=id, amount=amount)
+
 
 @router.get("/id")
 async def media_id(media_pk: int) -> str:
